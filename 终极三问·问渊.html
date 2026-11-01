@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>天道篇 · 终极三问 · 问渊</title>
+<style>
+  :root{
+    --paper:#fcfbf7; --ink:#2b2b2b; --ink-soft:#5a5346;
+    --violet:#6d5ca0; --violet-deep:#4d3d85; --violet-soft:#c8bae2;
+    --green:#54a05a; --gold:#e8c98f;
+    --abyss:#0d0b14; --abyss2:#1a1726; --moon:#e8e1cf; --src:#9b9281;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",serif;
+    background:var(--paper); color:var(--ink);
+    transition:background-color 1.4s ease, color 1.4s ease;
+    overflow-x:hidden; line-height:1.85; letter-spacing:.02em;
+  }
+  /* ── 下潜深度：背景随段落渐暗，触底回升 ── */
+  body[data-stage="0"]{background:#fcfbf7;color:#2b2b2b}
+  body[data-stage="1"]{background:#d9d2e4;color:#33304a}
+  body[data-stage="2"]{background:#8079a0;color:#f1edf7}
+  body[data-stage="3"]{background:#34304e;color:var(--moon)}
+  body[data-stage="4"]{background:#1a1726;color:var(--moon)}
+  body[data-stage="5"]{background:#3a3357;color:var(--moon)}
+  body[data-stage="6"]{background:#fcfbf7;color:#2b2b2b}
+
+  /* ── 中脉 / 井绳 ── */
+  .spine{position:fixed;left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);
+    background:linear-gradient(180deg,var(--gold),var(--violet-soft) 40%,var(--violet) 70%,rgba(109,92,160,.15));
+    box-shadow:0 0 6px rgba(232,201,143,.35); z-index:1; pointer-events:none; opacity:.7}
+  .spark{position:fixed;left:50%;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);
+    background:radial-gradient(circle,#fff6dd,var(--gold) 55%,rgba(232,201,143,0) 70%);
+    box-shadow:0 0 14px 4px rgba(232,201,143,.7); z-index:2; pointer-events:none;
+    top:calc(8% + var(--sp,0) * 84%); transition:top .15s linear}
+
+  main{position:relative; z-index:3}
+  .scene{max-width:720px;margin:0 auto;padding:0 26px;
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+  .scene.short{min-height:70vh}
+
+  /* ── 幕一 · 叩问 ── */
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+    border-radius:50%;background:var(--violet);color:#fff;font-size:18px;font-weight:700;margin-bottom:18px}
+  h1{font-size:clamp(26px,5.5vw,38px);letter-spacing:3px;font-weight:700}
+  .epi{margin:22px 0;border-left:3px solid var(--gold);padding:4px 0 4px 14px;
+    font-style:italic;color:inherit;opacity:.92;line-height:1.7}
+  .epi cite{display:block;font-style:normal;color:var(--src);font-size:.82em;margin-top:4px;letter-spacing:.05em}
+  .body[data-stage] .epi cite{}
+  .lead{margin-top:14px;font-size:clamp(15px,2.6vw,17px);color:inherit;opacity:.9}
+  .hint{margin-top:46px;color:inherit;opacity:.55;font-size:14px;letter-spacing:.2em;text-align:center;
+    animation:breathe 3.2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:.7;transform:translateY(5px)}}
+
+  /* ── 幕二 · 三叩（每关一渊镜） ── */
+  .q{font-size:clamp(40px,9vw,82px);font-weight:700;letter-spacing:4px;line-height:1.25;
+    text-align:center;margin-bottom:8px}
+  .q small{display:block;font-size:.28em;letter-spacing:.5em;opacity:.5;font-weight:400;margin-top:14px}
+
+  .layer{position:relative;margin:30px 0;padding:16px 0 16px 18px;transition:opacity .9s ease,filter .9s ease,transform .9s ease}
+  .chip{display:inline-block;font-size:12px;letter-spacing:.15em;padding:2px 10px;border-radius:11px;margin-bottom:10px}
+  .struct{border-left:3px solid var(--green)}
+  .struct .chip{background:rgba(84,160,90,.16);color:var(--green)}
+  .struct p{opacity:.78;font-size:clamp(15px,2.6vw,17px)}
+  .struct.dimmed{opacity:.32;filter:blur(1.2px);transform:translateY(10px)}
+  .noumenon{border-left:3px solid var(--violet)}
+  .noumenon .chip{background:rgba(109,92,160,.2);color:var(--violet-soft)}
+  body[data-stage="0"] .noumenon .chip,body[data-stage="1"] .noumenon .chip{color:var(--violet-deep)}
+  .noumenon p{font-size:clamp(17px,3vw,21px);line-height:1.95}
+
+  .turn{text-align:center;color:var(--gold);font-size:13px;letter-spacing:.4em;margin:6px 0;opacity:.0;
+    transition:opacity 1s ease}
+  .turn.in{opacity:.85}
+
+  .hammer{display:block;text-align:center;font-size:clamp(30px,7vw,56px);font-weight:700;
+    letter-spacing:.5em;margin:26px 0 10px;color:inherit;text-indent:.5em}
+  .tail{text-align:center;font-size:clamp(16px,2.8vw,19px);opacity:.9;margin-bottom:6px}
+
+  /* 印章（引文） */
+  .seal{margin:34px auto 0;max-width:560px;border-left:3px solid var(--gold);
+    padding:8px 0 8px 16px;font-style:italic;font-size:clamp(15px,2.7vw,18px);line-height:1.8;
+    color:inherit}
+  .seal cite{display:block;font-style:normal;color:var(--gold);opacity:.85;font-size:.8em;margin-top:6px;letter-spacing:.06em}
+  .seal.nameless{text-align:center;border-left:0;font-size:clamp(18px,3.2vw,22px);max-width:620px;
+    padding:0 10px;font-style:normal;font-weight:600;letter-spacing:.04em}
+
+  /* 渐显上浮 */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity 1.1s ease,transform 1.1s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ── 认知阶梯（八级 + 末级） ── */
+  .ladder{list-style:none;margin:26px 0 0;padding:0}
+  .ladder li{
+    font-weight:600;line-height:1.5;
+    font-size:calc(clamp(20px,4vw,32px) - var(--d) * 1.6px);
+    opacity:0; transform:translateY(18px);
+    padding-left:calc(var(--d) * 9%);
+    margin:.32em 0;
+    transition:opacity 1s ease, transform 1s ease;
+    transition-delay:calc(var(--d) * .12s);
+  }
+  .ladder li.in{opacity:calc(1 - var(--d) * .085); transform:none}
+  .ladder li .arr{color:var(--gold);opacity:.5;margin-right:.4em;font-weight:400}
+  .ladder li.last{padding-left:0;text-align:center;margin-top:1.6em;font-weight:700;
+    font-size:clamp(18px,3.4vw,24px);letter-spacing:.04em}
+  .ladder li.last.in{opacity:.5} /* 溶进井底，给极弱微光 */
+  body[data-stage="4"] .ladder li.last.in{color:#3b3550;text-shadow:0 0 14px rgba(200,186,224,.25)}
+  .ladder-gap{height:42vh}
+
+  /* 三动词逐字点亮 */
+  .glow-word{opacity:.3;transition:opacity .6s ease,text-shadow .6s ease}
+  .glow-word.lit{opacity:1;text-shadow:0 0 16px rgba(232,201,143,.5);color:var(--gold)}
+
+  /* ── 幕三 · 回环 ── */
+  .ghost{font-size:clamp(34px,8vw,64px);font-weight:700;letter-spacing:4px;text-align:center;
+    filter:blur(1px)}
+  .ghost.reveal.in{opacity:.22}  /* 幽灵态：压过 .reveal.in 的 opacity:1 */
+  .ghost-note{text-align:center;color:inherit;opacity:.5;font-size:13px;letter-spacing:.3em;margin-top:14px}
+  .closeword{text-align:center;font-size:clamp(17px,3vw,21px);line-height:2;margin-top:40px}
+  .back-top{display:block;text-align:center;margin-top:40px;color:var(--violet-deep);
+    background:none;border:1px solid var(--violet-soft);border-radius:20px;padding:9px 22px;width:max-content;
+    margin-left:auto;margin-right:auto;cursor:pointer;font-size:14px;letter-spacing:.2em;
+    font-family:inherit;transition:background .3s ease,color .3s ease}
+  .back-top:hover{background:var(--violet);color:#fff}
+
+  /* ── 幕四 · 落回于空 ── */
+  .void{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .void .end{font-size:clamp(19px,3.4vw,24px);font-weight:700;line-height:2.2;letter-spacing:.06em}
+  .void .restpoint{width:11px;height:11px;border-radius:50%;margin-bottom:40px;
+    background:radial-gradient(circle,#fff6dd,var(--gold) 55%,rgba(232,201,143,0) 72%);
+    box-shadow:0 0 16px 5px rgba(232,201,143,.55);animation:rest 4s ease-in-out infinite}
+  @keyframes rest{0%,100%{opacity:.4;transform:scale(.9)}50%{opacity:.85;transform:scale(1.1)}}
+
+  footer{padding:24px;text-align:center;color:var(--src);font-size:12px;opacity:.6}
+  @media (max-width:520px){ .scene{padding:0 20px} .ladder li{padding-left:calc(var(--d) * 6%)} }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:opacity .3s ease!important}}
+</style>
+</head>
+<body data-stage="0">
+  <div class="spine" aria-hidden="true"></div>
+  <div class="spark" aria-hidden="true"></div>
+
+<main>
+
+  <!-- 幕一 · 叩问 -->
+  <section class="scene" data-stage="0">
+    <span class="badge">★</span>
+    <h1>天道篇 · 终极三问</h1>
+    <div class="epi">"诸法空相，不生不灭，不垢不净，不增不减。"<cite>——《心经》</cite></div>
+    <p class="lead reveal">这三问，极性已在<strong>结构层</strong>速答过；空性，要在证悟的尽头，把它从<strong>本体层</strong>再翻深一寸——落回于空。</p>
+    <div class="hint">↓ 顺着问，往渊里去</div>
+  </section>
+
+  <!-- 幕二 · 三叩 · 关一 -->
+  <section class="scene" data-stage="1">
+    <div class="q reveal">我从哪里来？</div>
+    <div class="layer struct reveal" data-pair="g1">
+      <span class="chip">结构层 · 极性</span>
+      <p>道裂为二极，万物由此而生。</p>
+    </div>
+    <div class="turn">—— 翻深一寸 ——</div>
+    <div class="layer noumenon reveal" data-dim="g1">
+      <span class="chip">本体层 · 空性</span>
+      <p>连那"裂"、连那"欲望"、连"道"本身，底子都是空。你来自一场——</p>
+      <span class="hammer reveal">无中生有</span>
+      <p class="tail reveal">你是源头裂变出的一粒火种，与本源同质；在造出"非我"之前，道无法经验性地认识"我"。<br>你，是源头伸出去的一只眼睛。</p>
+      <div class="seal reveal">"唯有通过经验非我，我才能经验到我；然而我即是非我。"<cite>——《与神对话》</cite></div>
+    </div>
+  </section>
+
+  <!-- 关二 · 我是谁（爆点·最深一井） -->
+  <section class="scene" data-stage="2">
+    <div class="q reveal">我是谁？<small>本篇爆点 · 最深一井</small></div>
+    <div class="layer struct reveal" data-pair="g2">
+      <span class="chip">结构层 · 极性</span>
+      <p>在一对对二元的选择里，你被反复塑造，从无定稿。</p>
+    </div>
+    <div class="turn">—— 翻深一寸 ——</div>
+    <div class="layer noumenon reveal" data-dim="g2">
+      <span class="chip">本体层 · 空性</span>
+      <p>连那个"在选择的我"，也无自性。顺着"我"往里追，会追出一道往渊里去的阶梯——</p>
+    </div>
+  </section>
+
+  <section class="scene" data-stage="3">
+    <ol class="ladder">
+      <li style="--d:0"><span class="arr"></span>我</li>
+      <li style="--d:1"><span class="arr">↓</span>我非我</li>
+      <li style="--d:2"><span class="arr">↓</span>我是谁</li>
+      <li style="--d:3"><span class="arr">↓</span>谁是我</li>
+      <li style="--d:4"><span class="arr">↓</span>未生我时我是谁</li>
+      <li style="--d:5"><span class="arr">↓</span>我未生时谁是我</li>
+      <li style="--d:6"><span class="arr">↓</span>从何来，归何去</li>
+      <li style="--d:7"><span class="arr">↓</span>都是我，都不是我</li>
+      <li class="last" style="--d:8">我源自万有，而万有却不是我</li>
+    </ol>
+    <div class="ladder-gap"></div>
+    <div class="seal nameless reveal">回答这个问题的过程本身，就是生命的意义。</div>
+  </section>
+
+  <!-- 关三 · 我要到哪里去（触底回升） -->
+  <section class="scene" data-stage="5">
+    <div class="q reveal">我要到哪里去？</div>
+    <div class="layer struct reveal" data-pair="g3">
+      <span class="chip">结构层 · 极性</span>
+      <p>不为抵达哪一极，只为不断经验并创造那个"我是谁"。</p>
+    </div>
+    <div class="turn">—— 翻深一寸 ——</div>
+    <div class="layer noumenon reveal" data-dim="g3">
+      <span class="chip">本体层 · 空性</span>
+      <p>识破幻象之后，乘愿再来——</p>
+      <span class="hammer reveal">把光带回</span>
+      <p class="tail reveal">灵魂自始知晓一切，独缺"经验"；它要把关于自身最美好的概念，转化为最美妙的经验。<br>归处，就在创造与体验之中——回到"我"与"道"本是一体。</p>
+      <div class="seal reveal">意义，在<span class="glow-word" data-g="0">创造</span>中诞生，在<span class="glow-word" data-g="1">体验</span>中深化，在<span class="glow-word" data-g="2">觉醒</span>中升华。</div>
+    </div>
+  </section>
+
+  <!-- 幕三 · 回环合一 -->
+  <section class="scene" id="ring" data-stage="6">
+    <div class="ghost reveal">我从哪里来？</div>
+    <div class="ghost-note reveal">你回到了来处</div>
+    <p class="closeword reveal">来处，即是归处。<br>你从空里来，在相对里活过一场"我是谁"，终究落回于空——<br><strong>与道，本是一体。</strong></p>
+    <button class="back-top reveal" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ 回到源头</button>
+  </section>
+
+  <!-- 幕四 · 落回于空 -->
+  <section class="scene void" data-stage="6">
+    <div class="restpoint" aria-hidden="true"></div>
+    <p class="end reveal">空，不是没有，是还没显形的满。<br>你正站在万有的源头。</p>
+  </section>
+
+</main>
+
+<footer>天道篇 · 五法则之后的压轴 · 终极三问 ｜ 顺着问，往渊里去，再回到源头</footer>
+
+<script>
+(function(){
+  var body=document.body;
+
+  // 1) 下潜深度：哪一幕过中线，body 就切到那一档背景
+  var scenes=[].slice.call(document.querySelectorAll('.scene[data-stage]'));
+  var stageObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ body.setAttribute('data-stage', e.target.getAttribute('data-stage')); } });
+  },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+  scenes.forEach(function(s){stageObs.observe(s);});
+
+  // 2) 渐显上浮 + 升维坍缩（本体层入场→对应结构层下沉让位）+ 阶梯逐级 + 转场字 + 三动词
+  var revObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el=e.target; el.classList.add('in');
+      var dim=el.getAttribute('data-dim');
+      if(dim){ var s=document.querySelector('.struct[data-pair="'+dim+'"]'); if(s) s.classList.add('dimmed'); }
+      revObs.unobserve(el);
+    });
+  },{rootMargin:'0px 0px -18% 0px',threshold:.15});
+  document.querySelectorAll('.reveal,.turn,.ladder li,.glow-word').forEach(function(el){revObs.observe(el);});
+
+  // 3) 三动词逐字点亮（创造→体验→觉醒）
+  var gObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ var g=+e.target.getAttribute('data-g');
+      setTimeout(function(){e.target.classList.add('lit');}, g*650); gObs.unobserve(e.target);} });
+  },{threshold:.6});
+  document.querySelectorAll('.glow-word').forEach(function(el){gObs.observe(el);});
+
+  // 4) 中脉光点随 scroll 下行（rAF 节流）
+  var ticking=false;
+  function onScroll(){ if(ticking) return; ticking=true;
+    requestAnimationFrame(function(){
+      var h=document.documentElement.scrollHeight-window.innerHeight;
+      var p=h>0?Math.min(1,Math.max(0,window.scrollY/h)):0;
+      body.style.setProperty('--sp',p.toFixed(4));
+      ticking=false;
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>
